@@ -8,6 +8,3 @@
 [submodule "implot3d"]
 	path = implot3d
 	url = https://github.com/brenocq/implot3d.git
-[submodule "imgui_node_editor"]
-	path = imgui_node_editor
-	url = https://github.com/thedmd/imgui-node-editor.git
