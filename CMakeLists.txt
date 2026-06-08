@@ -37,6 +37,24 @@ set(IMPLOT3D_SOURCES
     ${IMPLOT3D_DIR}/implot3d_meshes.cpp)
 
 # ── imgui-node-editor ────────────────────────────────────────────────────────
+# Patch imgui-node-editor's imgui_extra_math.inl to avoid operator* collision with modern ImGui
+set(MATH_INL_FILE "${CMAKE_CURRENT_SOURCE_DIR}/imgui_node_editor/imgui_extra_math.inl")
+if(EXISTS "${MATH_INL_FILE}")
+    file(READ "${MATH_INL_FILE}" MATH_INL_CONTENT)
+    if(NOT MATH_INL_CONTENT MATCHES "#if IMGUI_VERSION_NUM < 19002\r?\ninline ImVec2 operator\\*")
+        message(STATUS "Patching imgui_extra_math.inl to avoid operator* collision...")
+        string(REPLACE
+            "inline ImVec2 operator*(const float lhs, const ImVec2& rhs)\n{\n    return ImVec2(lhs * rhs.x, lhs * rhs.y);\n}"
+            "#if IMGUI_VERSION_NUM < 19002\ninline ImVec2 operator*(const float lhs, const ImVec2& rhs)\n{\n    return ImVec2(lhs * rhs.x, lhs * rhs.y);\n}\n#endif"
+            MATH_INL_CONTENT "${MATH_INL_CONTENT}")
+        string(REPLACE
+            "inline ImVec2 operator*(const float lhs, const ImVec2& rhs)\r\n{\r\n    return ImVec2(lhs * rhs.x, lhs * rhs.y);\r\n}"
+            "#if IMGUI_VERSION_NUM < 19002\r\ninline ImVec2 operator*(const float lhs, const ImVec2& rhs)\r\n{\r\n    return ImVec2(lhs * rhs.x, lhs * rhs.y);\r\n}\r\n#endif"
+            MATH_INL_CONTENT "${MATH_INL_CONTENT}")
+        file(WRITE "${MATH_INL_FILE}" "${MATH_INL_CONTENT}")
+    endif()
+endif()
+
 set(IMNODEEDITOR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/imgui_node_editor)
 set(IMNODEEDITOR_SOURCES
     ${IMNODEEDITOR_DIR}/imgui_node_editor.cpp
