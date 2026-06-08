@@ -27,21 +27,32 @@ set(IMPLOT3D_SOURCES
     ${IMPLOT3D_DIR}/implot3d_demo.cpp
     ${IMPLOT3D_DIR}/implot3d_meshes.cpp)
 
+# ── imgui-node-editor ────────────────────────────────────────────────────────
+set(IMNODEEDITOR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/imgui_node_editor)
+set(IMNODEEDITOR_SOURCES
+    ${IMNODEEDITOR_DIR}/imgui_node_editor.cpp
+    ${IMNODEEDITOR_DIR}/imgui_node_editor_api.cpp
+    ${IMNODEEDITOR_DIR}/imgui_canvas.cpp
+    ${IMNODEEDITOR_DIR}/crude_json.cpp)
+
 # ── Bridge ────────────────────────────────────────────────────────────────────
 set(BRIDGE_SOURCES
     bridge/imgui_bridge.cpp
-    bridge/imgui_bridge_input.cpp)
+    bridge/imgui_bridge_input.cpp
+    bridge/imgui_node_editor_bridge.cpp)
 
 add_library(ImGuiNative SHARED
     ${IMGUI_SOURCES}
     ${IMPLOT_SOURCES}
     ${IMPLOT3D_SOURCES}
+    ${IMNODEEDITOR_SOURCES}
     ${BRIDGE_SOURCES})
 
 target_include_directories(ImGuiNative PRIVATE
     ${IMGUI_DIR}
     ${IMPLOT_DIR}
     ${IMPLOT3D_DIR}
+    ${IMNODEEDITOR_DIR}
     bridge)
 
 target_compile_definitions(ImGuiNative PRIVATE
