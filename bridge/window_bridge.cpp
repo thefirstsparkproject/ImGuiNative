@@ -1,6 +1,8 @@
 #include "window_bridge.h"
 #include <GLFW/glfw3.h>
 #include <imgui.h>
+#include <implot.h>
+#include <implot3d.h>
 #include <cstdio>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -25,6 +27,8 @@ namespace ne = ax::NodeEditor;
 struct WindowContext {
     GLFWwindow* window;
     ImGuiContext* imguiCtx;
+    ImPlotContext* implotCtx;
+    ImPlot3DContext* implot3dCtx;
     ne::EditorContext* nodeEditorCtx;
     
     // Registered callbacks
@@ -85,7 +89,15 @@ IMGUI_NATIVE_API void* IGN_Window_Create(int width, int height, const char* titl
     // Create isolated ImGui and Node Editor contexts
     ctx->imguiCtx = ImGui::CreateContext();
     ImGui::SetCurrentContext(ctx->imguiCtx);
-    
+
+    // Enable docking
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+    // Create ImPlot and ImPlot3D contexts linked to this ImGui context
+    ctx->implotCtx  = ImPlot::CreateContext();
+    ctx->implot3dCtx = ImPlot3D::CreateContext();
+
     ne::Config config;
     ctx->nodeEditorCtx = ne::CreateEditor(&config);
     
@@ -119,6 +131,8 @@ IMGUI_NATIVE_API void IGN_Window_Destroy(void* handle) {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ne::DestroyEditor(ctx->nodeEditorCtx);
+    ImPlot3D::DestroyContext(ctx->implot3dCtx);
+    ImPlot::DestroyContext(ctx->implotCtx);
     ImGui::DestroyContext(ctx->imguiCtx);
     glfwDestroyWindow(ctx->window);
     
@@ -156,6 +170,8 @@ IMGUI_NATIVE_API void IGN_Window_MakeCurrent(void* handle) {
     if (ctx) {
         glfwMakeContextCurrent(ctx->window);
         ImGui::SetCurrentContext(ctx->imguiCtx);
+        ImPlot::SetCurrentContext(ctx->implotCtx);
+        ImPlot3D::SetCurrentContext(ctx->implot3dCtx);
         ne::SetCurrentEditor(ctx->nodeEditorCtx);
     }
 }

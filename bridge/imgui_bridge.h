@@ -222,6 +222,56 @@ IMGUI_NATIVE_API void  IGN_Plot3D_PlotLine_Double(const char* label, const doubl
 IMGUI_NATIVE_API void  IGN_Plot3D_PlotScatter_Double(const char* label, const double* xs, const double* ys, const double* zs, int count, int offset, int stride);
 IMGUI_NATIVE_API void  IGN_Plot3D_PlotSurface_Double(const char* label, const double* xs, const double* ys, const double* zs, int xCount, int yCount, int offset, int rowStride);
 
+// ── ImPlot — float variants for already-double-only plots ──────────────────────
+IMGUI_NATIVE_API void  IGN_Plot_PlotShaded_FloatPtr(const char* label, const float* xs, const float* ys1, const float* ys2, int count, int offset, int stride);
+IMGUI_NATIVE_API void  IGN_Plot_PlotStairs_FloatPtr(const char* label, const float* xs, const float* ys, int count, int offset, int stride);
+IMGUI_NATIVE_API void  IGN_Plot_PlotErrorBars_FloatPtr(const char* label, const float* xs, const float* ys, const float* err, int count, int offset, int stride);
+IMGUI_NATIVE_API void  IGN_Plot_PlotPieChart_Float(const char* const* label_ids, const float* values, int count, double x, double y, double radius, const char* label_fmt, double angle0);
+
+// ── ImPlot — Bubbles ──────────────────────────────────────────────────────────
+IMGUI_NATIVE_API void  IGN_Plot_PlotBubbles_FloatPtr(const char* label, const float* xs, const float* ys, const float* szs, int count, int offset, int stride);
+IMGUI_NATIVE_API void  IGN_Plot_PlotBubbles_DoublePtr(const char* label, const double* xs, const double* ys, const double* szs, int count, int offset, int stride);
+
+// ── ImPlot — Polygon ─────────────────────────────────────────────────────────
+IMGUI_NATIVE_API void  IGN_Plot_PlotPolygon_FloatPtr(const char* label, const float* xs, const float* ys, int count, int offset, int stride);
+IMGUI_NATIVE_API void  IGN_Plot_PlotPolygon_DoublePtr(const char* label, const double* xs, const double* ys, int count, int offset, int stride);
+
+// ── ImPlot — Bar Groups ──────────────────────────────────────────────────────
+IMGUI_NATIVE_API void  IGN_Plot_PlotBarGroups_FloatPtr(const char* const* label_ids, const float* values, int item_count, int group_count, double group_size, double shift, int flags);
+IMGUI_NATIVE_API void  IGN_Plot_PlotBarGroups_DoublePtr(const char* const* label_ids, const double* values, int item_count, int group_count, double group_size, double shift, int flags);
+
+// ── ImPlot — Stems ────────────────────────────────────────────────────────────
+IMGUI_NATIVE_API void  IGN_Plot_PlotStems_FloatPtr(const char* label, const float* xs, const float* ys, int count, double ref, int offset, int stride);
+IMGUI_NATIVE_API void  IGN_Plot_PlotStems_DoublePtr(const char* label, const double* xs, const double* ys, int count, double ref, int offset, int stride);
+
+// ── ImPlot — Inf Lines ────────────────────────────────────────────────────────
+IMGUI_NATIVE_API void  IGN_Plot_PlotInfLines_FloatPtr(const char* label, const float* values, int count, int offset, int stride);
+IMGUI_NATIVE_API void  IGN_Plot_PlotInfLines_DoublePtr(const char* label, const double* values, int count, int offset, int stride);
+
+// ── ImPlot — Histogram ────────────────────────────────────────────────────────
+IMGUI_NATIVE_API double IGN_Plot_PlotHistogram_FloatPtr(const char* label, const float* values, int count, int bins, double bar_scale, double range_min, double range_max, int offset, int stride);
+IMGUI_NATIVE_API double IGN_Plot_PlotHistogram_DoublePtr(const char* label, const double* values, int count, int bins, double bar_scale, double range_min, double range_max, int offset, int stride);
+IMGUI_NATIVE_API double IGN_Plot_PlotHistogram2D_FloatPtr(const char* label, const float* xs, const float* ys, int count, int x_bins, int y_bins, double xmin, double xmax, double ymin, double ymax, int offset, int stride);
+IMGUI_NATIVE_API double IGN_Plot_PlotHistogram2D_DoublePtr(const char* label, const double* xs, const double* ys, int count, int x_bins, int y_bins, double xmin, double xmax, double ymin, double ymax, int offset, int stride);
+
+// ── ImPlot — Digital ─────────────────────────────────────────────────────────
+IMGUI_NATIVE_API void  IGN_Plot_PlotDigital_FloatPtr(const char* label, const float* xs, const float* ys, int count, int offset, int stride);
+IMGUI_NATIVE_API void  IGN_Plot_PlotDigital_DoublePtr(const char* label, const double* xs, const double* ys, int count, int offset, int stride);
+
+// ── ImPlot — Text & Dummy ────────────────────────────────────────────────────
+IMGUI_NATIVE_API void  IGN_Plot_PlotText(const char* text, double x, double y, float pix_offset_x, float pix_offset_y);
+IMGUI_NATIVE_API void  IGN_Plot_PlotDummy(const char* label_id);
+
+// ── ImPlot3D — new plot types ─────────────────────────────────────────────────
+IMGUI_NATIVE_API void  IGN_Plot3D_PlotTriangle(const char* label, const float* xs, const float* ys, const float* zs, int count, int offset, int stride);
+IMGUI_NATIVE_API void  IGN_Plot3D_PlotTriangle_Double(const char* label, const double* xs, const double* ys, const double* zs, int count, int offset, int stride);
+IMGUI_NATIVE_API void  IGN_Plot3D_PlotQuad(const char* label, const float* xs, const float* ys, const float* zs, int count, int offset, int stride);
+IMGUI_NATIVE_API void  IGN_Plot3D_PlotQuad_Double(const char* label, const double* xs, const double* ys, const double* zs, int count, int offset, int stride);
+IMGUI_NATIVE_API void  IGN_Plot3D_PlotMesh(const char* label, const float* xs, const float* ys, const float* zs, const unsigned int* idxs, int vtx_count, int idx_count, int offset, int stride);
+IMGUI_NATIVE_API void  IGN_Plot3D_PlotMesh_Double(const char* label, const double* xs, const double* ys, const double* zs, const unsigned int* idxs, int vtx_count, int idx_count, int offset, int stride);
+IMGUI_NATIVE_API void  IGN_Plot3D_PlotText(const char* text, double x, double y, double z, double angle, float pix_offset_x, float pix_offset_y);
+IMGUI_NATIVE_API void  IGN_Plot3D_PlotDummy(const char* label_id);
+
 #ifdef __cplusplus
 }
 #endif

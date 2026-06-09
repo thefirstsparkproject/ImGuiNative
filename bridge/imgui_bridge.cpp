@@ -623,3 +623,146 @@ void IGN_Plot3D_PlotSurface_Double(const char* label, const double* xs, const do
     spec.Stride = rowStride;
     ImPlot3D::PlotSurface(label, xs, ys, zs, xCount, yCount, 0.0, 0.0, spec);
 }
+
+// ── ImPlot — float variants for already-double-only plots ─────────────────────
+void IGN_Plot_PlotShaded_FloatPtr(const char* label, const float* xs, const float* ys1, const float* ys2, int count, int offset, int stride) {
+    ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot::PlotShaded(label, xs, ys1, ys2, count, spec);
+}
+void IGN_Plot_PlotStairs_FloatPtr(const char* label, const float* xs, const float* ys, int count, int offset, int stride) {
+    ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot::PlotStairs(label, xs, ys, count, spec);
+}
+void IGN_Plot_PlotErrorBars_FloatPtr(const char* label, const float* xs, const float* ys, const float* err, int count, int offset, int stride) {
+    ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot::PlotErrorBars(label, xs, ys, err, count, spec);
+}
+void IGN_Plot_PlotPieChart_Float(const char* const* label_ids, const float* values, int count, double x, double y, double radius, const char* label_fmt, double angle0) {
+    ImPlot::PlotPieChart(label_ids, values, count, x, y, radius, label_fmt, angle0);
+}
+
+// ── ImPlot — Bubbles ──────────────────────────────────────────────────────────
+void IGN_Plot_PlotBubbles_FloatPtr(const char* label, const float* xs, const float* ys, const float* szs, int count, int offset, int stride) {
+    ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot::PlotBubbles(label, xs, ys, szs, count, spec);
+}
+void IGN_Plot_PlotBubbles_DoublePtr(const char* label, const double* xs, const double* ys, const double* szs, int count, int offset, int stride) {
+    ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot::PlotBubbles(label, xs, ys, szs, count, spec);
+}
+
+// ── ImPlot — Polygon ─────────────────────────────────────────────────────────
+void IGN_Plot_PlotPolygon_FloatPtr(const char* label, const float* xs, const float* ys, int count, int offset, int stride) {
+    ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot::PlotPolygon(label, xs, ys, count, spec);
+}
+void IGN_Plot_PlotPolygon_DoublePtr(const char* label, const double* xs, const double* ys, int count, int offset, int stride) {
+    ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot::PlotPolygon(label, xs, ys, count, spec);
+}
+
+// ── ImPlot — Bar Groups ───────────────────────────────────────────────────────
+void IGN_Plot_PlotBarGroups_FloatPtr(const char* const* label_ids, const float* values, int item_count, int group_count, double group_size, double shift, int flags) {
+    ImPlotSpec spec; spec.Flags = flags;
+    ImPlot::PlotBarGroups(label_ids, values, item_count, group_count, group_size, shift, spec);
+}
+void IGN_Plot_PlotBarGroups_DoublePtr(const char* const* label_ids, const double* values, int item_count, int group_count, double group_size, double shift, int flags) {
+    ImPlotSpec spec; spec.Flags = flags;
+    ImPlot::PlotBarGroups(label_ids, values, item_count, group_count, group_size, shift, spec);
+}
+
+// ── ImPlot — Stems ────────────────────────────────────────────────────────────
+void IGN_Plot_PlotStems_FloatPtr(const char* label, const float* xs, const float* ys, int count, double ref, int offset, int stride) {
+    ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot::PlotStems(label, xs, ys, count, ref, spec);
+}
+void IGN_Plot_PlotStems_DoublePtr(const char* label, const double* xs, const double* ys, int count, double ref, int offset, int stride) {
+    ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot::PlotStems(label, xs, ys, count, ref, spec);
+}
+
+// ── ImPlot — Inf Lines ────────────────────────────────────────────────────────
+void IGN_Plot_PlotInfLines_FloatPtr(const char* label, const float* values, int count, int offset, int stride) {
+    ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot::PlotInfLines(label, values, count, spec);
+}
+void IGN_Plot_PlotInfLines_DoublePtr(const char* label, const double* values, int count, int offset, int stride) {
+    ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot::PlotInfLines(label, values, count, spec);
+}
+
+// ── ImPlot — Histogram ────────────────────────────────────────────────────────
+double IGN_Plot_PlotHistogram_FloatPtr(const char* label, const float* values, int count, int bins, double bar_scale, double range_min, double range_max, int offset, int stride) {
+    ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlotRange range = (range_min == 0.0 && range_max == 0.0) ? ImPlotRange() : ImPlotRange(range_min, range_max);
+    return ImPlot::PlotHistogram(label, values, count, bins, bar_scale, range, spec);
+}
+double IGN_Plot_PlotHistogram_DoublePtr(const char* label, const double* values, int count, int bins, double bar_scale, double range_min, double range_max, int offset, int stride) {
+    ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlotRange range = (range_min == 0.0 && range_max == 0.0) ? ImPlotRange() : ImPlotRange(range_min, range_max);
+    return ImPlot::PlotHistogram(label, values, count, bins, bar_scale, range, spec);
+}
+double IGN_Plot_PlotHistogram2D_FloatPtr(const char* label, const float* xs, const float* ys, int count, int x_bins, int y_bins, double xmin, double xmax, double ymin, double ymax, int offset, int stride) {
+    ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlotRect range = (xmin == 0.0 && xmax == 0.0 && ymin == 0.0 && ymax == 0.0) ? ImPlotRect() : ImPlotRect(xmin, xmax, ymin, ymax);
+    return ImPlot::PlotHistogram2D(label, xs, ys, count, x_bins, y_bins, range, spec);
+}
+double IGN_Plot_PlotHistogram2D_DoublePtr(const char* label, const double* xs, const double* ys, int count, int x_bins, int y_bins, double xmin, double xmax, double ymin, double ymax, int offset, int stride) {
+    ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlotRect range = (xmin == 0.0 && xmax == 0.0 && ymin == 0.0 && ymax == 0.0) ? ImPlotRect() : ImPlotRect(xmin, xmax, ymin, ymax);
+    return ImPlot::PlotHistogram2D(label, xs, ys, count, x_bins, y_bins, range, spec);
+}
+
+// ── ImPlot — Digital ─────────────────────────────────────────────────────────
+void IGN_Plot_PlotDigital_FloatPtr(const char* label, const float* xs, const float* ys, int count, int offset, int stride) {
+    ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot::PlotDigital(label, xs, ys, count, spec);
+}
+void IGN_Plot_PlotDigital_DoublePtr(const char* label, const double* xs, const double* ys, int count, int offset, int stride) {
+    ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot::PlotDigital(label, xs, ys, count, spec);
+}
+
+// ── ImPlot — Text & Dummy ─────────────────────────────────────────────────────
+void IGN_Plot_PlotText(const char* text, double x, double y, float pix_offset_x, float pix_offset_y) {
+    ImPlot::PlotText(text, x, y, ImVec2(pix_offset_x, pix_offset_y));
+}
+void IGN_Plot_PlotDummy(const char* label_id) {
+    ImPlot::PlotDummy(label_id);
+}
+
+// ── ImPlot3D — Triangle & Quad ────────────────────────────────────────────────
+void IGN_Plot3D_PlotTriangle(const char* label, const float* xs, const float* ys, const float* zs, int count, int offset, int stride) {
+    ImPlot3DSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot3D::PlotTriangle(label, xs, ys, zs, count, spec);
+}
+void IGN_Plot3D_PlotTriangle_Double(const char* label, const double* xs, const double* ys, const double* zs, int count, int offset, int stride) {
+    ImPlot3DSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot3D::PlotTriangle(label, xs, ys, zs, count, spec);
+}
+void IGN_Plot3D_PlotQuad(const char* label, const float* xs, const float* ys, const float* zs, int count, int offset, int stride) {
+    ImPlot3DSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot3D::PlotQuad(label, xs, ys, zs, count, spec);
+}
+void IGN_Plot3D_PlotQuad_Double(const char* label, const double* xs, const double* ys, const double* zs, int count, int offset, int stride) {
+    ImPlot3DSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot3D::PlotQuad(label, xs, ys, zs, count, spec);
+}
+
+// ── ImPlot3D — Mesh ───────────────────────────────────────────────────────────
+void IGN_Plot3D_PlotMesh(const char* label, const float* xs, const float* ys, const float* zs, const unsigned int* idxs, int vtx_count, int idx_count, int offset, int stride) {
+    ImPlot3DSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot3D::PlotMesh(label, xs, ys, zs, idxs, vtx_count, idx_count, spec);
+}
+void IGN_Plot3D_PlotMesh_Double(const char* label, const double* xs, const double* ys, const double* zs, const unsigned int* idxs, int vtx_count, int idx_count, int offset, int stride) {
+    ImPlot3DSpec spec; spec.Offset = offset; spec.Stride = stride;
+    ImPlot3D::PlotMesh(label, xs, ys, zs, idxs, vtx_count, idx_count, spec);
+}
+
+// ── ImPlot3D — Text & Dummy ───────────────────────────────────────────────────
+void IGN_Plot3D_PlotText(const char* text, double x, double y, double z, double angle, float pix_offset_x, float pix_offset_y) {
+    ImPlot3D::PlotText(text, x, y, z, angle, ImVec2(pix_offset_x, pix_offset_y));
+}
+void IGN_Plot3D_PlotDummy(const char* label_id) {
+    ImPlot3D::PlotDummy(label_id);
+}
