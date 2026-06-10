@@ -25,7 +25,15 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: false
+
+      - name: Checkout Submodules
+        shell: bash
+        run: |
+          git submodule update --init --recursive --depth=1 glfw imgui implot implot3d
+          git clone https://github.com/thedmd/imgui-node-editor.git imgui_node_editor
+          cd imgui_node_editor
+          git checkout 021aa0ea4da13fed864bafb2a92d4c5205076866
 
       - name: Install Dependencies (Linux)
         if: runner.os == 'Linux'
