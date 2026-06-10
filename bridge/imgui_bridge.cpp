@@ -251,6 +251,9 @@ void IGN_NewLine_()     { ImGui::NewLine(); }
 void IGN_Spacing()      { ImGui::Spacing(); }
 void IGN_PushID_Str(const char* id) { ImGui::PushID(id); }
 void IGN_PopID()        { ImGui::PopID(); }
+unsigned int IGN_GetID(const char* str_id) {
+    return ImGui::GetID(str_id);
+}
 
 bool IGN_ColorEdit4(const char* label, float* col, int flags) {
     return ImGui::ColorEdit4(label, col, flags);
@@ -282,8 +285,51 @@ void IGN_ShowDemoWindow(bool* pOpen) { ImGui::ShowDemoWindow(pOpen); }
 unsigned int IGN_DockSpace(unsigned int id, float w, float h, int flags) {
     return ImGui::DockSpace(id, ImVec2(w, h), flags);
 }
-void IGN_DockSpaceOverViewport(int flags) {
-    ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), flags);
+unsigned int IGN_DockSpaceOverViewport(unsigned int dockspace_id, int flags) {
+    return ImGui::DockSpaceOverViewport(dockspace_id, ImGui::GetMainViewport(), flags);
+}
+void IGN_SetNextWindowDockID(unsigned int dock_id, int cond) {
+    ImGui::SetNextWindowDockID(dock_id, cond);
+}
+unsigned int IGN_GetWindowDockID() {
+    return ImGui::GetWindowDockID();
+}
+bool IGN_IsWindowDocked() {
+    return ImGui::IsWindowDocked();
+}
+
+void IGN_DockBuilderDockWindow(const char* window_name, unsigned int node_id) {
+    ImGui::DockBuilderDockWindow(window_name, node_id);
+}
+unsigned int IGN_DockBuilderAddNode(unsigned int node_id, int flags) {
+    return ImGui::DockBuilderAddNode(node_id, flags);
+}
+void IGN_DockBuilderSetNodeFlags(unsigned int node_id, int flags) {
+    ImGuiDockNode* node = ImGui::DockBuilderGetNode(node_id);
+    if (node) {
+        node->SetLocalFlags(flags);
+    }
+}
+void IGN_DockBuilderRemoveNode(unsigned int node_id) {
+    ImGui::DockBuilderRemoveNode(node_id);
+}
+void IGN_DockBuilderRemoveNodeDockedWindows(unsigned int node_id, bool clear_settings_refs) {
+    ImGui::DockBuilderRemoveNodeDockedWindows(node_id, clear_settings_refs);
+}
+void IGN_DockBuilderRemoveNodeChildNodes(unsigned int node_id) {
+    ImGui::DockBuilderRemoveNodeChildNodes(node_id);
+}
+void IGN_DockBuilderSetNodePos(unsigned int node_id, float pos_x, float pos_y) {
+    ImGui::DockBuilderSetNodePos(node_id, ImVec2(pos_x, pos_y));
+}
+void IGN_DockBuilderSetNodeSize(unsigned int node_id, float size_x, float size_y) {
+    ImGui::DockBuilderSetNodeSize(node_id, ImVec2(size_x, size_y));
+}
+unsigned int IGN_DockBuilderSplitNode(unsigned int node_id, int split_dir, float size_ratio_for_node_at_dir, unsigned int* out_id_at_dir, unsigned int* out_id_at_opposite_dir) {
+    return ImGui::DockBuilderSplitNode(node_id, static_cast<ImGuiDir>(split_dir), size_ratio_for_node_at_dir, out_id_at_dir, out_id_at_opposite_dir);
+}
+void IGN_DockBuilderFinish(unsigned int node_id) {
+    ImGui::DockBuilderFinish(node_id);
 }
 
 // ── ImPlot ────────────────────────────────────────────────────────────────────
@@ -414,6 +460,14 @@ void IGN_GetWindowSize(float* x, float* y) {
 }
 void IGN_GetWindowPos(float* x, float* y) {
     ImVec2 v = ImGui::GetWindowPos();
+    *x = v.x; *y = v.y;
+}
+void IGN_GetMainViewportWorkPos(float* x, float* y) {
+    ImVec2 v = ImGui::GetMainViewport()->WorkPos;
+    *x = v.x; *y = v.y;
+}
+void IGN_GetMainViewportWorkSize(float* x, float* y) {
+    ImVec2 v = ImGui::GetMainViewport()->WorkSize;
     *x = v.x; *y = v.y;
 }
 void IGN_SetNextWindowBgAlpha(float alpha) { ImGui::SetNextWindowBgAlpha(alpha); }

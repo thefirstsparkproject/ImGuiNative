@@ -87,6 +87,7 @@ IMGUI_NATIVE_API void  IGN_NewLine_();
 IMGUI_NATIVE_API void  IGN_Spacing();
 IMGUI_NATIVE_API void  IGN_PushID_Str(const char* id);
 IMGUI_NATIVE_API void  IGN_PopID();
+IMGUI_NATIVE_API unsigned int IGN_GetID(const char* str_id);
 IMGUI_NATIVE_API bool  IGN_ColorEdit4(const char* label, float* col, int flags);
 IMGUI_NATIVE_API bool  IGN_DragFloat(const char* label, float* v, float speed, float min, float max, const char* fmt, int flags);
 IMGUI_NATIVE_API bool  IGN_DragInt(const char* label, int* v, float speed, int min, int max, const char* fmt, int flags);
@@ -100,7 +101,22 @@ IMGUI_NATIVE_API void  IGN_ShowDemoWindow(bool* pOpen);
 
 // ── Docking ───────────────────────────────────────────────────────────────────
 IMGUI_NATIVE_API unsigned int IGN_DockSpace(unsigned int id, float w, float h, int flags);
-IMGUI_NATIVE_API void         IGN_DockSpaceOverViewport(int flags);
+IMGUI_NATIVE_API unsigned int IGN_DockSpaceOverViewport(unsigned int dockspace_id, int flags);
+IMGUI_NATIVE_API void         IGN_SetNextWindowDockID(unsigned int dock_id, int cond);
+IMGUI_NATIVE_API unsigned int IGN_GetWindowDockID();
+IMGUI_NATIVE_API bool         IGN_IsWindowDocked();
+
+// DockBuilder API (Programmatic Layout Setup)
+IMGUI_NATIVE_API void         IGN_DockBuilderDockWindow(const char* window_name, unsigned int node_id);
+IMGUI_NATIVE_API unsigned int IGN_DockBuilderAddNode(unsigned int node_id, int flags);
+IMGUI_NATIVE_API void         IGN_DockBuilderSetNodeFlags(unsigned int node_id, int flags);
+IMGUI_NATIVE_API void         IGN_DockBuilderRemoveNode(unsigned int node_id);
+IMGUI_NATIVE_API void         IGN_DockBuilderRemoveNodeDockedWindows(unsigned int node_id, bool clear_settings_refs);
+IMGUI_NATIVE_API void         IGN_DockBuilderRemoveNodeChildNodes(unsigned int node_id);
+IMGUI_NATIVE_API void         IGN_DockBuilderSetNodePos(unsigned int node_id, float pos_x, float pos_y);
+IMGUI_NATIVE_API void         IGN_DockBuilderSetNodeSize(unsigned int node_id, float size_x, float size_y);
+IMGUI_NATIVE_API unsigned int IGN_DockBuilderSplitNode(unsigned int node_id, int split_dir, float size_ratio_for_node_at_dir, unsigned int* out_id_at_dir, unsigned int* out_id_at_opposite_dir);
+IMGUI_NATIVE_API void         IGN_DockBuilderFinish(unsigned int node_id);
 
 // ── ImPlot ────────────────────────────────────────────────────────────────────
 IMGUI_NATIVE_API void  IGN_Plot_CreateContext();
@@ -145,6 +161,8 @@ IMGUI_NATIVE_API void  IGN_Unindent(float indent_w);
 IMGUI_NATIVE_API void  IGN_GetContentRegionAvail(float* x, float* y);
 IMGUI_NATIVE_API void  IGN_GetWindowSize(float* x, float* y);
 IMGUI_NATIVE_API void  IGN_GetWindowPos(float* x, float* y);
+IMGUI_NATIVE_API void  IGN_GetMainViewportWorkPos(float* x, float* y);
+IMGUI_NATIVE_API void  IGN_GetMainViewportWorkSize(float* x, float* y);
 IMGUI_NATIVE_API void  IGN_SetNextWindowBgAlpha(float alpha);
 
 IMGUI_NATIVE_API void  IGN_PushStyleColor(int idx, float r, float g, float b, float a);
