@@ -766,3 +766,99 @@ void IGN_Plot3D_PlotText(const char* text, double x, double y, double z, double 
 void IGN_Plot3D_PlotDummy(const char* label_id) {
     ImPlot3D::PlotDummy(label_id);
 }
+
+// ── InputText with resize callback (string-friendly) ─────────────────────────
+// These allow F# to pass a pointer-to-pointer so the buffer can grow dynamically.
+// The caller owns the buffer (allocated with malloc/realloc); we use CallbackResize.
+
+struct IGN_StringResizeData {
+    char**  buf;
+    int*    bufLen;
+    int*    bufCap;
+};
+
+static int IGN_InputTextResizeCallback(ImGuiInputTextCallbackData* data) {
+    if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
+        IGN_StringResizeData* ud = (IGN_StringResizeData*)data->UserData;
+        int newCap = data->BufSize;
+        char* newBuf = (char*)realloc(*ud->buf, (size_t)newCap);
+        if (newBuf) {
+            *ud->buf    = newBuf;
+            *ud->bufCap = newCap;
+            data->Buf   = newBuf;
+        }
+    }
+    return 0;
+}
+
+bool IGN_InputText_String(const char* label, char** buf, int* bufLen, int* bufCap, int flags) {
+    IGN_StringResizeData ud{ buf, bufLen, bufCap };
+    bool changed = ImGui::InputText(label, *buf, (size_t)*bufCap,
+        flags | ImGuiInputTextFlags_CallbackResize,
+        IGN_InputTextResizeCallback, &ud);
+    if (changed)
+        *bufLen = (int)strlen(*buf);
+    return changed;
+}
+
+bool IGN_InputTextMultiline_String(const char* label, char** buf, int* bufLen, int* bufCap, float w, float h, int flags) {
+    IGN_StringResizeData ud{ buf, bufLen, bufCap };
+    bool changed = ImGui::InputTextMultiline(label, *buf, (size_t)*bufCap,
+        ImVec2(w, h),
+        flags | ImGuiInputTextFlags_CallbackResize,
+        IGN_InputTextResizeCallback, &ud);
+    if (changed)
+        *bufLen = (int)strlen(*buf);
+    return changed;
+}
+
+// ── List Clipper ──────────────────────────────────────────────────────────────
+void* IGN_Clipper_Create() {
+    ImGuiListClipper* c = new ImGuiListClipper();
+    return (void*)c;
+}
+void IGN_Clipper_Destroy(void* clipper) {
+    delete (ImGuiListClipper*)clipper;
+}
+void IGN_Clipper_Begin(void* clipper, int items_count, float items_height) {
+    ((ImGuiListClipper*)clipper)->Begin(items_count, items_height);
+}
+bool IGN_Clipper_Step(void* clipper) {
+    return ((ImGuiListClipper*)clipper)->Step();
+}
+void IGN_Clipper_End(void* clipper) {
+    ((ImGuiListClipper*)clipper)->End();
+}
+int IGN_Clipper_GetDisplayStart(void* clipper) {
+    return ((ImGuiListClipper*)clipper)->DisplayStart;
+}
+int IGN_Clipper_GetDisplayEnd(void* clipper) {
+    return ((ImGuiListClipper*)clipper)->DisplayEnd;
+}
+
+// ── Additional layout & query helpers ────────────────────────────────────────
+void  IGN_SetNextItemWidth(float item_width) { ImGui::SetNextItemWidth(item_width); }
+void  IGN_SetNextWindowContentSize(float w, float h) { ImGui::SetNextWindowContentSize(ImVec2(w, h)); }
+void  IGN_TableSetupScrollFreeze(int cols, int rows) { ImGui::TableSetupScrollFreeze(cols, rows); }
+void  IGN_TableSetBgColor(int target, unsigned int color, int column_n) { ImGui::TableSetBgColor(target, color, column_n); }
+void  IGN_SeparatorText(const char* label) { ImGui::SeparatorText(label); }
+void  IGN_CalcTextSize(const char* text, float* out_w, float* out_h) {
+    ImVec2 sz = ImGui::CalcTextSize(text);
+    *out_w = sz.x; *out_h = sz.y;
+}
+float IGN_GetFrameHeight()                  { return ImGui::GetFrameHeight(); }
+float IGN_GetTextLineHeight()               { return ImGui::GetTextLineHeight(); }
+float IGN_GetTextLineHeightWithSpacing()    { return ImGui::GetTextLineHeightWithSpacing(); }
+float IGN_GetFrameHeightWithSpacing()       { return ImGui::GetFrameHeightWithSpacing(); }
+float IGN_GetScrollY()                      { return ImGui::GetScrollY(); }
+float IGN_GetScrollMaxY()                   { return ImGui::GetScrollMaxY(); }
+void  IGN_SetScrollY(float scroll_y)        { ImGui::SetScrollY(scroll_y); }
+void  IGN_SetScrollHereY(float center_y_ratio) { ImGui::SetScrollHereY(center_y_ratio); }
+bool  IGN_IsWindowFocused(int flags)        { return ImGui::IsWindowFocused(flags); }
+bool  IGN_IsWindowHovered(int flags)        { return ImGui::IsWindowHovered(flags); }
+void  IGN_SetItemDefaultFocus()             { ImGui::SetItemDefaultFocus(); }
+bool  IGN_IsItemVisible()                   { return ImGui::IsItemVisible(); }
+bool  IGN_IsItemEdited()                    { return ImGui::IsItemEdited(); }
+bool  IGN_IsItemDeactivatedAfterEdit()      { return ImGui::IsItemDeactivatedAfterEdit(); }
+void  IGN_PushItemFlag(int option, bool enabled) { ImGui::PushItemFlag(option, enabled); }
+void  IGN_PopItemFlag()                     { ImGui::PopItemFlag(); }

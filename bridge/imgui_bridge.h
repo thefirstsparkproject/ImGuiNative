@@ -272,6 +272,43 @@ IMGUI_NATIVE_API void  IGN_Plot3D_PlotMesh_Double(const char* label, const doubl
 IMGUI_NATIVE_API void  IGN_Plot3D_PlotText(const char* text, double x, double y, double z, double angle, float pix_offset_x, float pix_offset_y);
 IMGUI_NATIVE_API void  IGN_Plot3D_PlotDummy(const char* label_id);
 
+// ── InputText with resize callback (string-friendly) ─────────────────────────
+IMGUI_NATIVE_API bool  IGN_InputText_String(const char* label, char** buf, int* bufLen, int* bufCap, int flags);
+IMGUI_NATIVE_API bool  IGN_InputTextMultiline_String(const char* label, char** buf, int* bufLen, int* bufCap, float w, float h, int flags);
+
+// ── List Clipper ──────────────────────────────────────────────────────────────
+IMGUI_NATIVE_API void* IGN_Clipper_Create();
+IMGUI_NATIVE_API void  IGN_Clipper_Destroy(void* clipper);
+IMGUI_NATIVE_API void  IGN_Clipper_Begin(void* clipper, int items_count, float items_height);
+IMGUI_NATIVE_API bool  IGN_Clipper_Step(void* clipper);
+IMGUI_NATIVE_API void  IGN_Clipper_End(void* clipper);
+IMGUI_NATIVE_API int   IGN_Clipper_GetDisplayStart(void* clipper);
+IMGUI_NATIVE_API int   IGN_Clipper_GetDisplayEnd(void* clipper);
+
+// ── Additional layout & query helpers ────────────────────────────────────────
+IMGUI_NATIVE_API void  IGN_SetNextItemWidth(float item_width);
+IMGUI_NATIVE_API void  IGN_SetNextWindowContentSize(float w, float h);
+IMGUI_NATIVE_API void  IGN_TableSetupScrollFreeze(int cols, int rows);
+IMGUI_NATIVE_API void  IGN_TableSetBgColor(int target, unsigned int color, int column_n);
+IMGUI_NATIVE_API void  IGN_SeparatorText(const char* label);
+IMGUI_NATIVE_API void  IGN_CalcTextSize(const char* text, float* out_w, float* out_h);
+IMGUI_NATIVE_API float IGN_GetFrameHeight();
+IMGUI_NATIVE_API float IGN_GetTextLineHeight();
+IMGUI_NATIVE_API float IGN_GetTextLineHeightWithSpacing();
+IMGUI_NATIVE_API float IGN_GetFrameHeightWithSpacing();
+IMGUI_NATIVE_API float IGN_GetScrollY();
+IMGUI_NATIVE_API float IGN_GetScrollMaxY();
+IMGUI_NATIVE_API void  IGN_SetScrollY(float scroll_y);
+IMGUI_NATIVE_API void  IGN_SetScrollHereY(float center_y_ratio);
+IMGUI_NATIVE_API bool  IGN_IsWindowFocused(int flags);
+IMGUI_NATIVE_API bool  IGN_IsWindowHovered(int flags);
+IMGUI_NATIVE_API void  IGN_SetItemDefaultFocus();
+IMGUI_NATIVE_API bool  IGN_IsItemVisible();
+IMGUI_NATIVE_API bool  IGN_IsItemEdited();
+IMGUI_NATIVE_API bool  IGN_IsItemDeactivatedAfterEdit();
+IMGUI_NATIVE_API void  IGN_PushItemFlag(int option, bool enabled);
+IMGUI_NATIVE_API void  IGN_PopItemFlag();
+
 #ifdef __cplusplus
 }
 #endif
