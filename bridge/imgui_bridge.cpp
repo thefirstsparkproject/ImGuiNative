@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <algorithm>
 #include <ctime>
+#include <cmath>
 
 // ── Lifecycle ─────────────────────────────────────────────────────────────────
 
@@ -49,31 +50,36 @@ void IGN_DestroyContext(void* ctx_ptr) {
     ImPlotContext* prevImPlot = ImPlot::GetCurrentContext();
     ImPlot3DContext* prevImPlot3D = ImPlot3D::GetCurrentContext();
 
-    ImGui::SetCurrentContext(ctx->imguiCtx);
-    ImPlot::SetCurrentContext(ctx->implotCtx);
-    ImPlot3D::SetCurrentContext(ctx->implot3dCtx);
+    // Cache before delete to avoid use-after-free
+    ImGuiContext*    destroyedImGui    = ctx->imguiCtx;
+    ImPlotContext*   destroyedImPlot   = ctx->implotCtx;
+    ImPlot3DContext* destroyedImPlot3D = ctx->implot3dCtx;
 
-    ImPlot3D::DestroyContext(ctx->implot3dCtx);
-    ImPlot::DestroyContext(ctx->implotCtx);
-    ImGui::DestroyContext(ctx->imguiCtx);
+    ImGui::SetCurrentContext(destroyedImGui);
+    ImPlot::SetCurrentContext(destroyedImPlot);
+    ImPlot3D::SetCurrentContext(destroyedImPlot3D);
+
+    ImPlot3D::DestroyContext(destroyedImPlot3D);
+    ImPlot::DestroyContext(destroyedImPlot);
+    ImGui::DestroyContext(destroyedImGui);
 
     delete ctx;
 
-    if (prevImGui && prevImGui != ctx->imguiCtx) {
+    if (prevImGui && prevImGui != destroyedImGui) {
         ImGui::SetCurrentContext(prevImGui);
-    } else if (prevImGui == ctx->imguiCtx) {
+    } else if (prevImGui == destroyedImGui) {
         ImGui::SetCurrentContext(nullptr);
     }
 
-    if (prevImPlot && prevImPlot != ctx->implotCtx) {
+    if (prevImPlot && prevImPlot != destroyedImPlot) {
         ImPlot::SetCurrentContext(prevImPlot);
-    } else if (prevImPlot == ctx->implotCtx) {
+    } else if (prevImPlot == destroyedImPlot) {
         ImPlot::SetCurrentContext(nullptr);
     }
 
-    if (prevImPlot3D && prevImPlot3D != ctx->implot3dCtx) {
+    if (prevImPlot3D && prevImPlot3D != destroyedImPlot3D) {
         ImPlot3D::SetCurrentContext(prevImPlot3D);
-    } else if (prevImPlot3D == ctx->implot3dCtx) {
+    } else if (prevImPlot3D == destroyedImPlot3D) {
         ImPlot3D::SetCurrentContext(nullptr);
     }
 }
@@ -92,6 +98,7 @@ void IGN_SetCurrentContext(void* ctx_ptr) {
 }
 
 void IGN_MoveWindowsToVisibleRange() {
+    if (!GImGui) return;
     ImGuiContext& g = *GImGui;
     ImVec2 display_size = g.IO.DisplaySize;
     for (int i = 0; i < g.Windows.Size; i++) {
@@ -635,7 +642,14 @@ void IGN_Plot_PlotCandles(const char* label_id, const double* xs, const double* 
 
         if (found_hover) {
             time_t raw_time = (time_t)hover_x;
-            struct tm* time_info = gmtime(&raw_time);
+            struct tm time_buf_storage;
+            struct tm* time_info = nullptr;
+#ifdef _WIN32
+            gmtime_s(&time_buf_storage, &raw_time);
+            time_info = &time_buf_storage;
+#else
+            time_info = gmtime_r(&raw_time, &time_buf_storage);
+#endif
             char date_buf[64];
             if (time_info && time_info->tm_hour == 0 && time_info->tm_min == 0 && time_info->tm_sec == 0) {
                 strftime(date_buf, sizeof(date_buf), "%Y-%m-%d", time_info);
@@ -746,24 +760,25 @@ void IGN_Plot_PlotInfLines_DoublePtr(const char* label, const double* values, in
 }
 
 // ── ImPlot — Histogram ────────────────────────────────────────────────────────
+// Pass NaN for range_min/range_max to request auto-range (avoids the [0,0] ambiguity).
 double IGN_Plot_PlotHistogram_FloatPtr(const char* label, const float* values, int count, int bins, double bar_scale, double range_min, double range_max, int offset, int stride) {
     ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
-    ImPlotRange range = (range_min == 0.0 && range_max == 0.0) ? ImPlotRange() : ImPlotRange(range_min, range_max);
+    ImPlotRange range = (std::isnan(range_min) || std::isnan(range_max)) ? ImPlotRange() : ImPlotRange(range_min, range_max);
     return ImPlot::PlotHistogram(label, values, count, bins, bar_scale, range, spec);
 }
 double IGN_Plot_PlotHistogram_DoublePtr(const char* label, const double* values, int count, int bins, double bar_scale, double range_min, double range_max, int offset, int stride) {
     ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
-    ImPlotRange range = (range_min == 0.0 && range_max == 0.0) ? ImPlotRange() : ImPlotRange(range_min, range_max);
+    ImPlotRange range = (std::isnan(range_min) || std::isnan(range_max)) ? ImPlotRange() : ImPlotRange(range_min, range_max);
     return ImPlot::PlotHistogram(label, values, count, bins, bar_scale, range, spec);
 }
 double IGN_Plot_PlotHistogram2D_FloatPtr(const char* label, const float* xs, const float* ys, int count, int x_bins, int y_bins, double xmin, double xmax, double ymin, double ymax, int offset, int stride) {
     ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
-    ImPlotRect range = (xmin == 0.0 && xmax == 0.0 && ymin == 0.0 && ymax == 0.0) ? ImPlotRect() : ImPlotRect(xmin, xmax, ymin, ymax);
+    ImPlotRect range = (std::isnan(xmin) || std::isnan(xmax) || std::isnan(ymin) || std::isnan(ymax)) ? ImPlotRect() : ImPlotRect(xmin, xmax, ymin, ymax);
     return ImPlot::PlotHistogram2D(label, xs, ys, count, x_bins, y_bins, range, spec);
 }
 double IGN_Plot_PlotHistogram2D_DoublePtr(const char* label, const double* xs, const double* ys, int count, int x_bins, int y_bins, double xmin, double xmax, double ymin, double ymax, int offset, int stride) {
     ImPlotSpec spec; spec.Offset = offset; spec.Stride = stride;
-    ImPlotRect range = (xmin == 0.0 && xmax == 0.0 && ymin == 0.0 && ymax == 0.0) ? ImPlotRect() : ImPlotRect(xmin, xmax, ymin, ymax);
+    ImPlotRect range = (std::isnan(xmin) || std::isnan(xmax) || std::isnan(ymin) || std::isnan(ymax)) ? ImPlotRect() : ImPlotRect(xmin, xmax, ymin, ymax);
     return ImPlot::PlotHistogram2D(label, xs, ys, count, x_bins, y_bins, range, spec);
 }
 

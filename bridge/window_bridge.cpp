@@ -99,6 +99,16 @@ IMGUI_NATIVE_API void* IGN_Window_Create(int width, int height, const char* titl
     ctx->implot3dCtx = ImPlot3D::CreateContext();
 
     ne::Config config;
+    // Keep parity with IGNE_CreateEditor: middle mouse for pan, same zoom levels
+    config.NavigateButtonIndex = 2;
+    static const float s_zoomLevels[] = {
+        0.5f, 0.55f, 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f,
+        1.0f, 1.05f, 1.1f, 1.15f, 1.2f, 1.25f, 1.3f, 1.35f, 1.4f, 1.45f,
+        1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 2.0f
+    };
+    config.CustomZoomLevels.reserve(sizeof(s_zoomLevels) / sizeof(s_zoomLevels[0]));
+    for (float z : s_zoomLevels)
+        config.CustomZoomLevels.push_back(z);
     ctx->nodeEditorCtx = ne::CreateEditor(&config);
     
     ImGui_ImplGlfw_InitForOpenGL(win, true);
@@ -143,7 +153,9 @@ IMGUI_NATIVE_API void IGN_Window_Destroy(void* handle) {
     if (g_Windows.empty()) {
         glfwTerminate();
     } else {
-        // Re-initialize GL loader function pointers since the first window's OpenGL3 shutdown cleared them
+        // Re-initialize GL loader function pointers since the first window's OpenGL3 shutdown cleared them.
+        // A current GL context is required — make the first remaining window current before calling.
+        glfwMakeContextCurrent(g_Windows[0]->window);
         imgl3wInit();
     }
 }
