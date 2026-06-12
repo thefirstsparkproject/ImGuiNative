@@ -294,6 +294,10 @@ IMGUI_NATIVE_API void  IGN_Plot3D_PlotDummy(const char* label_id);
 IMGUI_NATIVE_API bool  IGN_InputText_String(const char* label, char** buf, int* bufLen, int* bufCap, int flags);
 IMGUI_NATIVE_API bool  IGN_InputTextMultiline_String(const char* label, char** buf, int* bufLen, int* bufCap, float w, float h, int flags);
 
+// ── Texture ───────────────────────────────────────────────────────────────────
+IMGUI_NATIVE_API unsigned int IGN_LoadTextureFromMemory(const unsigned char* rgba_pixels, int width, int height);
+IMGUI_NATIVE_API void         IGN_FreeTexture(unsigned int texId);
+
 // ── List Clipper ──────────────────────────────────────────────────────────────
 IMGUI_NATIVE_API void* IGN_Clipper_Create();
 IMGUI_NATIVE_API void  IGN_Clipper_Destroy(void* clipper);

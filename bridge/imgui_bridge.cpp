@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <ctime>
 #include <cmath>
+#include <GLFW/glfw3.h>
 
 // ── Lifecycle ─────────────────────────────────────────────────────────────────
 
@@ -882,6 +883,28 @@ bool IGN_InputTextMultiline_String(const char* label, char** buf, int* bufLen, i
 }
 
 // ── List Clipper ──────────────────────────────────────────────────────────────
+// ── Texture ───────────────────────────────────────────────────────────────────
+
+unsigned int IGN_LoadTextureFromMemory(const unsigned char* rgba_pixels, int width, int height) {
+    GLuint texId = 0;
+    glGenTextures(1, &texId);
+    glBindTexture(GL_TEXTURE_2D, texId);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, rgba_pixels);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    return (unsigned int)texId;
+}
+
+void IGN_FreeTexture(unsigned int texId) {
+    GLuint id = (GLuint)texId;
+    glDeleteTextures(1, &id);
+}
+
+// ── List Clipper ──────────────────────────────────────────────────────────────
+
 void* IGN_Clipper_Create() {
     ImGuiListClipper* c = new ImGuiListClipper();
     return (void*)c;
