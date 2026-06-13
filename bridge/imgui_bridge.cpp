@@ -276,11 +276,11 @@ bool IGN_RadioButton(const char* label, bool active) { return ImGui::RadioButton
 void IGN_ProgressBar(float fraction, float w, float h, const char* overlay) {
     ImGui::ProgressBar(fraction, ImVec2(w, h), overlay);
 }
-void IGN_Image(unsigned int texId, float w, float h) {
-    ImGui::Image((ImTextureID)(uintptr_t)texId, ImVec2(w, h));
+void IGN_Image(unsigned int texId, float w, float h, float uv0_x, float uv0_y, float uv1_x, float uv1_y) {
+    ImGui::Image((ImTextureID)(uintptr_t)texId, ImVec2(w, h), ImVec2(uv0_x, uv0_y), ImVec2(uv1_x, uv1_y));
 }
-bool IGN_ImageButton(const char* id, unsigned int texId, float w, float h) {
-    return ImGui::ImageButton(id, (ImTextureID)(uintptr_t)texId, ImVec2(w, h));
+bool IGN_ImageButton(const char* id, unsigned int texId, float w, float h, float uv0_x, float uv0_y, float uv1_x, float uv1_y) {
+    return ImGui::ImageButton(id, (ImTextureID)(uintptr_t)texId, ImVec2(w, h), ImVec2(uv0_x, uv0_y), ImVec2(uv1_x, uv1_y));
 }
 void IGN_SetNextWindowPos(float x, float y, int cond) {
     ImGui::SetNextWindowPos(ImVec2(x, y), cond);

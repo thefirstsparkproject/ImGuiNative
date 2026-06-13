@@ -93,8 +93,8 @@ IMGUI_NATIVE_API bool  IGN_DragFloat(const char* label, float* v, float speed, f
 IMGUI_NATIVE_API bool  IGN_DragInt(const char* label, int* v, float speed, int min, int max, const char* fmt, int flags);
 IMGUI_NATIVE_API bool  IGN_RadioButton(const char* label, bool active);
 IMGUI_NATIVE_API void  IGN_ProgressBar(float fraction, float w, float h, const char* overlay);
-IMGUI_NATIVE_API void  IGN_Image(unsigned int userTextureId, float w, float h);
-IMGUI_NATIVE_API bool  IGN_ImageButton(const char* id, unsigned int userTextureId, float w, float h);
+IMGUI_NATIVE_API void  IGN_Image(unsigned int userTextureId, float w, float h, float uv0_x, float uv0_y, float uv1_x, float uv1_y);
+IMGUI_NATIVE_API bool  IGN_ImageButton(const char* id, unsigned int userTextureId, float w, float h, float uv0_x, float uv0_y, float uv1_x, float uv1_y);
 IMGUI_NATIVE_API void  IGN_SetNextWindowPos(float x, float y, int cond);
 IMGUI_NATIVE_API void  IGN_SetNextWindowSize(float w, float h, int cond);
 IMGUI_NATIVE_API void  IGN_ShowDemoWindow(bool* pOpen);
